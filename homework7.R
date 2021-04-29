@@ -8,7 +8,7 @@ question4 <- function()
   for(x in 1:4) 
   {
     tempX = rt(SIZE , df=2) 
-    print(paste("checking graph" , x ,"data" , tempX) 
+   # print(paste("checking graph" , x ,"data" , tempX) 
     qqnorm(tempX , main=paste("question4--random graph---" , x))
     qqline(tempX)
   }
