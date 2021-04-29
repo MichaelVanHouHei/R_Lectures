@@ -8,7 +8,7 @@ question4 <- function()
   for(x in 1:4) 
   {
     tempX = rt(SIZE , df=2) 
-    qqnorm(tempX , main=paste("X" , x))
+    qqnorm(tempX , main=paste("question4--random graph---" , x))
     qqline(tempX)
   }
 }
@@ -25,7 +25,7 @@ question5 <- function()
    fit=lm(y~x)
    summary(fit)
    STRES= fit$residuals / SDE(x , mean(x) , fit$residuals)
-   plot(fit$fitted.values,STRES)
+   plot(fit$fitted.values,STRES, main="question 5a")
    #question 5b
    qqnorm(STRES , main="question 5b" )
    qqline(STRES)
