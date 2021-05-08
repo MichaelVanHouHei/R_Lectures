@@ -33,6 +33,6 @@ print(anovaData)
 print(paste("SS_pe" , SS_pe))
 print(paste("SS_lof" ,SS_lof ))
 #(SS_lof / lof_df) / (SS_pe/pe_df) this is how F calcuated 
-#
+#which is equals to  anovaData$`F value`[3]
 print(paste("F-test:" , anovaData$`F value`[3]  ))
 print(paste("we reject the region H0 0.05 since the f-value " , anovaData$`F value`[3]  , "larger than 0.05"))
