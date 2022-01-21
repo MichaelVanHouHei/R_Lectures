@@ -1,0 +1,148 @@
+---
+title: "Math3021 DB92728-3 VAN HOU HEI"
+output: html_notebook
+---
+  
+
+```{r}
+#install("ISLR2")
+library (ISLR2)
+library(Hmisc) # for corrlation matrix
+library(ggplot2) #of cuz we need to plot the graph
+Boston
+?Boston
+```
+How many rows are in this data set? How many columns? What
+do the rows and columns represent?
+```{r}
+dim(Boston) #506 column , 13 rows
+```
+so we have  506 cases(rows) by upper columns we have    
+CRIM - per capita crime rate by town    
+ZN - proportion of residential land zoned for lots over 25,000 sq.ft.   
+INDUS - proportion of non-retail business acres per town.   
+CHAS - Charles River dummy variable (1 if tract bounds river; 0 otherwise)    
+NOX - nitric oxides concentration (parts per 10 million)    
+RM - average number of rooms per dwelling   
+AGE - proportion of owner-occupied units built prior to 1940    
+DIS - weighted distances to five Boston employment centres    
+RAD - index of accessibility to radial highways   
+TAX - full-value property-tax rate per $10,000    
+PTRATIO - pupil-teacher ratio by town   
+B - 1000(Bk - 0.63)^2 where Bk is the proportion of blacks by town    
+LSTAT - % lower status of the population    
+MEDV - Median value of owner-occupied homes in $1000's    
+Make some pairwise scatterplots of the predictors (columns) in
+this data set. Describe your findings
+```{r}
+Boston$chas <- as.numeric(Boston$chas) # we need to convert int to double 
+Boston$rad <- as.numeric(Boston$rad)# we need to convert int to double
+pairs(Boston) # pairwise scatterplots
+```
+some of them varabiles are correlated.
+by part (b) we look for correlation matrix
+```{r}
+flattenCorrMatrix <- function(cormat, pmat) {
+  ut <- upper.tri(cormat)
+  data.frame(
+    row = rownames(cormat)[row(cormat)[ut]],
+    column = rownames(cormat)[col(cormat)[ut]],
+    cor  =(cormat)[ut],
+    p = pmat[ut]
+    )
+}
+res2<-rcorr(as.matrix(Boston))
+flattenCorrMatrix(res2$r, res2$P)
+```
+by the result(corrlation coefficient and p-values) abrove we can denote there are corrlation between crime rate with other columns(predictor)
+```{r}
+lapply(Boston, summary)
+
+```
+```{r}
+qplot(Boston$crim, binwidth=5, xlab= "Crime rate", ylab= "Number of Suburbs")+ theme_light()
+qplot(Boston$tax, binwidth=50, xlab="Full-value property-tax rate per $10,000", ylab="Number of Suburbs")+ theme_light()
+qplot(Boston$ptratio, binwidth=5, xlab="Pupil-teacher ratio by town", ylab="Number of Suburbs")   + theme_light()
+   
+ 
+```
+First graph we denoted that the median and maximum crime rate values are 0.25651 and 88.97620 repectively 
+```{r}
+for(i in 1:5)
+{
+   perIndex = i * 10
+   selection <- subset(Boston, crim>perIndex )
+   rate <- nrow(selection) / nrow(Boston) * 100
+   result <- paste(rate, "% neighborhood have crime rate abrove " ,perIndex  , "%", sep=" ")
+   print(result)
+}
+```
+since by the tax rate graph we missed the region 4xx ~ 600+
+so 
+```{r}
+ 
+selection <- subset(Boston, tax<600)
+nrow(selection) / nrow(Boston) * 100
+selection <- subset(Boston, tax>600)
+nrow(selection) / nrow(Boston) * 100
+
+```
+How many of the census tracts in this data set bound the Charles
+river?
+```{r}
+ans <-nrow(subset(Boston, chas==1)) # chas is charles river where i is contained
+print(paste("num of charles river" , ans))
+```
+What is the median pupil-teacher ratio among the towns in this
+data set?
+```{r}
+ans <- median(Boston$ptratio)
+print(paste("the median is " , ans))
+```
+Which census tract of Boston has lowest median value of owneroccupied homes? What are the values of the other predictors
+for that census tract, and how do those values compare to the
+overall ranges for those predictors? Comment on your findings.
+```{r}
+ans <- Boston[order(Boston$medv),] #order by aes first element must be  lowest 
+summary(ans)
+ans[1,]
+```
+There is no residential land zoned for lots exceeding 25,000 sq.ft., which is quite high when compared to the median and average crime rates of all Boston areas. This is true in more than half of Boston's neighborhoods.        
+In comparison to most suburbs, the proportion of non-retail business acres per town is relatively high.       
+
+This is not one of the suburbs that surrounds the Charles River.    
+The content of nitrogen oxides (parts per 10 million) is one of the highest.    
+
+The average number of rooms per household is one of the lowest in the country.    
+
+Owner-occupied units built before to 1940 have the highest proportion of owners.    
+
+One of the shortest weighted average distances to five Boston job centers.    
+
+The highest accessibility index for radial roads.   
+
+One of the highest full-value property-tax rates per $10,000 in the United States.    
+One of the town's highest pupil-to-teacher ratios.
+
+The highest number for 1000(Bk - 0.63)2, where Bk is the percentage of black people in each town.   
+
+One of the population's lowest socioeconomic status (percent).    
+
+In the $1000s, the lowest median value of owner-occupied dwellings.   
+
+In this data set, how many of the census tracts average more
+than seven rooms per dwelling? More than eight rooms per
+dwelling? Comment on the census tracts that average more than
+eight rooms per dwelling.
+
+```{r}
+for(i in 6:8)
+{
+   ans <- (subset(Boston, rm>i))
+   noOf<- nrow(ans)
+   print(paste("There are ",noOf, " suburbs with more than " , i ," rooms per dwelling." ))
+   print(summary(ans))
+   
+
+}
+```
